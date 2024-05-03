@@ -21,7 +21,7 @@ This is a Flask-based web application for managing airport scheduling. It allows
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/airport-scheduling-system.git
+   git clone [https://github.com/MasirAliKhan/airport-scheduling-system](https://github.com/MasirAliKhan/Airport-Scheduling-Problem-master).git
    ```
 
 2. Install dependencies:
