@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airport Scheduling System</title>
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"  rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    body {
+        background-image: url('https://images.unsplash.com/photo-1522441815192-d9f04eb0615c?q=80&w=1827&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        padding-top: 5%;
+
+    }
+    .container {
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+</style>
+</head>
+<body>
+    <div class="container mx-auto px-4 py-8 bg-white shadow-md rounded-md">
+    <h1 class="text-3xl font-bold mb-6 text-center font-gilroy ">Airport Details Form</h2>
+  
+    <!-- Airport Information Section -->
+    <div class="bg-white shadow-lg rounded-lg p-8 mb-8" >
+        <h3 class="text-2xl font-bold mb-4">Airport Information</h3>
+        <form id="airport_form" action="/submit" method="POST">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="max_planes" class="block mb-2 text-lg font-medium">Max Number of Planes Landing at Once:</label>
+                    <input id="max_planes" name="max_planes" type="number" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="boarding_gates" class="block mb-2 text-lg font-medium">Number of Boarding Gates:</label>
+                    <input id="boarding_gates" name="boarding_gates" type="number" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="max_planes_boarding" class="block mb-2 text-lg font-medium">Max Number of Planes Boarding at Once:</label>
+                    <input id="max_planes_boarding" name="max_planes_boarding" type="number" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="hovering_planes" class="block mb-2 text-lg font-medium">Number of Planes Hovering:</label>
+                    <input id="hovering_planes" name="hovering_planes" type="number" class="form-input w-full rounded-md shadow-sm" onchange="generateFlightInputs()">
+                </div>
+            </div>
+            <div id="flight_inputs" class="mb-4"></div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="file">
+                    Upload File
+                </label>
+                <input type="file" name="file" id="file" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="flex justify-between">
+                <button id="upload_btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" type="button" onclick="uploadFile()"><i class="fas fa-upload mr-2"></i>Upload</button>
+                <button id="submit_btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" type="button" onclick="submitForm()"><i class="fas fa-paper-plane mr-2"></i>Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Output Content Section -->
+    <div id="output_content" class="hidden bg-white shadow-lg rounded-lg p-8 mb-8">
+        <h2 class="text-2xl font-bold mb-4 text-center">Output Content</h2>
+        <pre id="output_text" class="whitespace-pre-wrap"></pre>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center mt-6 pb-4">
+        <a id="display_btn" href="#" style="display:none" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"><i class="fas fa-eye mr-2"></i>Display Output</a>
+    </div>
+
+   <!-- About Us Section -->
+<div class="bg-white shadow-lg rounded-lg p-8 mb-8 transition-transform duration-500 transform translate-x-0 hover:-translate-x-2">
+    <h2 class="text-2xl font-bold mb-4 text-center">About Us</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center">
+            <h3 class="text-lg font-bold mb-2">Member 1 Arish Khan</h3>
+            <p>Roll Number: 22K-8702</p>
+        </div>
+        <div class="text-center">
+            <h3 class="text-lg font-bold mb-2">Member 2 Masir Ali Khan</h3>
+            <p>Roll Number: 22K-4118</p>
+        </div>
+        <div class="text-center">
+            <h3 class="text-lg font-bold mb-2">Supervisor</h3>
+            <p>Sir Sohail Ahmed</p>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+function generateFlightInputs() {
+    const numHoveringPlanes = document.getElementById('hovering_planes').value;
+    const flightInputs = document.getElementById('flight_inputs');
+    flightInputs.innerHTML = '';
+
+    for (let i = 1; i <= numHoveringPlanes; i++) {
+        const flightInputDiv = document.createElement('div');
+        flightInputDiv.classList.add('bg-gray-100', 'p-6', 'rounded-lg', 'mb-6');
+
+        flightInputDiv.innerHTML = `
+            <h3 class="text-xl font-bold mb-4">Flight ${i}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div>
+                    <label for="rmsoc_${i}" class="block mb-2 text-lg font-medium">Max Minutes Hover</label>
+                    <input id="rmsoc_${i}" name="flight_${i}_rmsoc" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="m_${i}" class="block mb-2 text-lg font-medium">landing To Gate Time</label>
+                    <input id="m_${i}" name="flight_${i}_m" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="s_${i}" class="block mb-2 text-lg font-medium">Retakeoff After landing</label>
+                    <input id="s_${i}" name="flight_${i}_s" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="o_${i}" class="block mb-2 text-lg font-medium">Terminal to Takeoff time</label>
+                    <input id="o_${i}" name="flight_${i}_o" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="c_${i}" class="block mb-2 text-lg font-medium">Maximum Wait time </label>
+                    <input id="c_${i}" name="flight_${i}_c" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+            </div>
+        `;
+
+        flightInputs.appendChild(flightInputDiv);
+    }
+}
+
+function createFlightInput() {
+    const numHoveringPlanes = document.getElementById('hovering_planes').value;
+    const flightInputs = document.getElementById('flight_inputs');
+    const currentFlights = flightInputs.children.length;
+    
+    if (currentFlights < numHoveringPlanes) {
+        const flightNumber = currentFlights + 1;
+
+        const flightInputDiv = document.createElement('div');
+        flightInputDiv.classList.add('bg-gray-100', 'p-6', 'rounded-lg', 'mb-6');
+
+        flightInputDiv.innerHTML = `
+            <h3 class="text-xl font-bold mb-4">Flight ${flightNumber}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div>
+                    <label for="rmsoc_${flightNumber}" class="block mb-2 text-lg font-medium">RMSOC:</label>
+                    <input id="rmsoc_${flightNumber}" name="flight_${flightNumber}_rmsoc" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="m_${flightNumber}" class="block mb-2 text-lg font-medium">M:</label>
+                    <input id="m_${flightNumber}" name="flight_${flightNumber}_m" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="s_${flightNumber}" class="block mb-2 text-lg font-medium">S:</label>
+                    <input id="s_${flightNumber}" name="flight_${flightNumber}_s" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="o_${flightNumber}" class="block mb-2 text-lg font-medium">O:</label>
+                    <input id="o_${flightNumber}" name="flight_${flightNumber}_o" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+                <div>
+                    <label for="c_${flightNumber}" class="block mb-2 text-lg font-medium">C:</label>
+                    <input id="c_${flightNumber}" name="flight_${flightNumber}_c" type="text" class="form-input w-full rounded-md shadow-sm">
+                </div>
+            </div>
+        `;
+
+        flightInputs.appendChild(flightInputDiv);
+    } else {
+        alert("Cannot add more flights than hovering planes.");
+    }   
+}
+
+function submitForm() {
+    const form = document.getElementById('airport_form');
+    const formData = new FormData(form);
+
+    fetch('/submit', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to submit form');
+        }
+        if (!response.headers.get('content-type') || !response.headers.get('content-type').includes('application/json')) {
+            throw new Error('Invalid response from server');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            console.log('Form submitted successfully');
+            document.getElementById('display_btn').style.display = 'inline-block'; // Display the "Display Output" button
+        } else {
+            throw new Error(data.error || 'Unknown error occurred');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
+        // Display error message to the user or handle error appropriately
+    });
+}
+
+
+function uploadFile() {
+    var fileInput = document.getElementById('file');
+    var file = fileInput.files[0];
+    var formData = new FormData();
+
+    if (file) {
+        formData.append('file', file);
+    }
+
+    fetch('/upload-file', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Error uploading file');
+    })
+    .then(data => {
+        console.log('File uploaded successfully');
+        document.getElementById('display_btn').style.display = 'inline-block';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle error
+    });
+}
+// Function to fetch and display output content
+function displayOutput() {
+    fetch('/display-output')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch output content');
+        }
+        return response.text();
+    })
+    .then(output => {
+        document.getElementById('output_text').innerText = output;
+        document.getElementById('output_content').classList.remove('hidden');
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
+        // Display error message to the user or handle error appropriately
+    });
+}
+
+// Add event listener to display output button
+document.getElementById('display_btn').addEventListener('click', displayOutput);
+
+// Add event listener to add flight button
+document.getElementById('add_flight').addEventListener('click', createFlightInput);
+
+// Add event listener to submit button
+document.getElementById('submit_btn').addEventListener('click', submitForm);
+
+</script>
+</body>
+</html>
